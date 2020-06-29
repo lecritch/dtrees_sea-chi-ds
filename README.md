@@ -1,9 +1,20 @@
 
 # Decision Trees
 
+# Agenda
+
+1. FSM and Metric Discussion
+2. Decision Trees at a High Level
+3. ASM (Attribute Selection Methods): Entropy/Information Gain and Gini
+4. Issues with Decision Trees: Overfitting, sensitivity to training data, greediness
+5. Feature Importances
+6. Grid Search
+
 # Quick and Dirty Model
 
-# Decision Trees
+If you were building a model for the animal shelter, which metric would you focus on?
+
+# 2. Decision Trees at a High Level
 
 The **CART algorithm** is structured as a sequence of questions to try and split up the different observations into their own groups. The result of these questions is a tree like structure where the ends are terminal nodes at which point there are no more questions.  A simple example of a decision tree is as follows:
 
@@ -13,7 +24,7 @@ A decision tree is a machine learning model that works by partitioning our sampl
 
 How do we partition the space? The key idea is that some attributes provide more information than others when trying to make a decision.
 
-# In Pairs:
+# In Pairs (private message): 
     
 You are a triage nurse at a hospital being inundated with patients who believe they are suffering from coronavirus.  You neeed to quickly assess which patients are most likely to have coronavirus, and separate them from the rest of the patients.      
 
@@ -22,10 +33,10 @@ Based on what you know of the virus, create a list of a few questions and a flow
 ## High level of how the Decision Tree algorithm works
 
 * Select the best attribute using Attribute Selection Measures (Gini/Entropy) to split the records.
-* Make that attribute a decision node and breaks the dataset into smaller subsets.
+* Make that attribute a decision node and break the dataset into smaller subsets.
 * Starts tree building by repeating this process recursively for each child until one of these conditions will match:
-    * All the tuples belong to the same attribute value.
-    * There are no more remaining attributes.
+    * You have reached a pure split: the leaf has only 1 class
+    * There are no more remaining attributes to split on.
     * There are no more instances.
 
 ### Important Terminology related to Decision Trees
@@ -103,7 +114,7 @@ would perform fairly well.
 
 But how would my partition be *best* split? And how do I really know that the second split is better than the first? Can I do better than intuition here?  
 
-## Entropy and Information Gain
+# 3. Entropy/Information Gain and Gini
 
 The goal is to have our ultimate classes be fully "ordered" (for a binary dependent variable, we'd have the 1's in one group and the 0's in the other). So one way to assess the value of a split is to measure how *disordered* our groups are, and there is a notion of *entropy* that measures precisely this.
 
@@ -150,18 +161,6 @@ def entropy(p_0,p_1):
     
 entropy(p_0, p_1)
 ```
-
-    [0 1]
-    [373 349]
-    0.5166204986149584 0.48337950138504154
-
-
-
-
-
-    0.9992027901802841
-
-
 
 To calculate the entropy of a *split*, we're going to want to calculate the entropy of each of the groups made by the split, and then calculate a weighted average of those groups' entropies––weighted, that is, by the size of the groups. Let's calculate the entropy of the split produced by our "is our animal a dog" question:
 
@@ -228,13 +227,6 @@ gini_split
 ```
 
 
-
-
-    0.6233333333333333
-
-
-
-
 ```python
 g1_l = 1 - ((3/3)**2 + 0)
 g1_r = 1 - ((5/7)**2 + (2/7)**2)
@@ -243,13 +235,6 @@ gini_split = 3/10 * g1_l + (7/10) ** 2
 gini_split
 g1_l+g1_r
 ```
-
-
-
-
-    0.40816326530612246
-
-
 
 
 ```python
@@ -266,14 +251,14 @@ graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
 Image(graph.create_png())
 ```
 
+# Caveat
 
 
+As found in *Introduction to Data Mining* by Tan et. al:
 
-![png](index_files/index_28_0.png)
+`Studies have shown that the choice of impurity measure has little effect on the performance of decision tree induction algorithms. This is because many impurity measures are quite consistent with each other [...]. Indeed, the strategy used to prune the tree has a greater impact on the final tree than the choice of impurity measure.`
 
-
-
-# Issues with Decision Trees
+# 4. Issues with Decision Trees
 
 ### Decision trees are prone to overfitting
 
@@ -331,11 +316,13 @@ We will see how to overcome greediness with Random Forests.
 
 The fitted tree has an attribute called `ct.feature_importances_`. What does this mean? Roughly, the importance (or "Gini importance") of a feature is a sort of weighted average of the impurity decrease at internal nodes that make use of the feature. The weighting comes from the number of samples that depend on the relevant nodes.
 
+> The importance of a feature is computed as the (normalized) total reduction of the criterion brought by that feature. It is also known as the Gini importance. [sklearn](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier.feature_importances_)
+
 More on feature importances [here](https://towardsdatascience.com/the-mathematics-of-decision-trees-random-forest-and-feature-importance-in-scikit-learn-and-spark-f2861df67e3)
 
 # Conclusions
 
-Decision Tree is a white box type of ML algorithm. It shares internal decision-making logic, which is not available in the black box type of algorithms such as Neural Network. Its training time is faster compared to the neural network algorithm. The time complexity of decision trees is a function of the number of records and number of attributes in the given data. The decision tree is a non-parametric method, which does not depend upon probability distribution assumptions. Decision trees can handle high dimensional data with good accuracy.
+Decision Tree is a white box type of ML algorithm. It shares internal decision-making logic, which is not available in the black box type of algorithms such as Neural Network. Its training time is faster compared to the neural network algorithm. The decision tree is a non-parametric method, which does not depend upon probability distribution assumptions. Decision trees can handle high dimensional data with good accuracy.
 
 #### Pros
 - Decision trees are easy to interpret and visualize.
@@ -348,3 +335,5 @@ Decision Tree is a white box type of ML algorithm. It shares internal decision-m
 - Sensitive to noisy data. It can overfit noisy data.
 - The small variation(or variance) in data can result in the different decision tree. This can be reduced by bagging and boosting algorithms.
 - Decision trees are biased with imbalance dataset, so it is recommended that balance out the dataset before creating the decision tree.
+
+# 6. Grid Search
