@@ -35,14 +35,17 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-from src.student_caller import one_random_student
+from src.student_caller import one_random_student, pairs
+
+import warnings
+warnings.filterwarnings('ignore')
 
 mccalister = ['Adam', 'Amanda','Chum', 'Dann',
  'Jacob', 'Jason', 'Johnhoy', 'Karim',
 'Leana','Luluva', 'Matt', 'Maximilian','Syd' ]
 ```
 
-# Quick and Dirty Model
+# FSM and Metric Discussion
 
 
 ```python
@@ -73,19 +76,6 @@ from src.shelter_preprocess import preprocess_df
 animal_shelter.age_upon_outcome.isna().sum()
 animal_shelter.head()
 ```
-
-
-    ---------------------------------------------------------------------------
-
-    NameError                                 Traceback (most recent call last)
-
-    <ipython-input-1-e21c0fce34bb> in <module>
-    ----> 1 animal_shelter.age_upon_outcome.isna().sum()
-          2 animal_shelter.head()
-
-
-    NameError: name 'animal_shelter' is not defined
-
 
 
 ```python
