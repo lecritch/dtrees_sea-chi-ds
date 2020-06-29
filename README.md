@@ -10,7 +10,7 @@
 5. Feature Importances
 6. Grid Search
 
-# Quick and Dirty Model
+# FSM and Metric Discussion
 
 If you were building a model for the animal shelter, which metric would you focus on?
 
